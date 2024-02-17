@@ -2,7 +2,7 @@ import { create } from 'zustand'
 
 export type configType = {
     numberOfQuestion:number,
-    category:{id:number,name:string},
+    category:{name:string},
     level:string,
     type:string,
     status:string,
@@ -12,7 +12,7 @@ export type configType = {
 
 const defaultConfig = {
     numberOfQuestion:10,
-    category:{id:0,name:''},
+    category:{name:''},
     level:"",
     type:"",
     status:'',
@@ -22,7 +22,7 @@ const defaultConfig = {
 export const useQuizConfig = create((set) => ({
   config : {...defaultConfig},
   addLevel: (level:string) => set((state:configType) => ({config:{...state.config,level:level}})),
-  addCategory: (id:number,name:string) => set((state:configType) => ({config:{...state.config,category:{id:id,name:name}}})),
+  addCategory: (name:string) => set((state:configType) => ({config:{...state.config,category:{name:name}}})),
   addType: (type:string) => set((state:configType) => ({config:{...state.config,type:type}})),
   addQuestionNumber: (numberOfQuestion:string) => set((state:configType) => ({config:{...state.config,numberOfQuestion:numberOfQuestion}})),
   changeStatus: (status:string) => set((state:configType) => ({config:{...state.config,status:status}})),
