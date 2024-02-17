@@ -7,6 +7,11 @@ import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Player } from "@lottiefiles/react-lottie-player";
 
+type Question = {
+  question: string;
+  answer: string;
+  options: string[];
+};
  type questionT= 
   {answers:string[],category:string,correct_answer:string,incorrect_answers:string[],difficulty:string,type:string}
 
@@ -25,26 +30,40 @@ export default function Quiz() {
   useEffect(() => {
     async function getQuestions() {
       setLoading(true);
-      const { results } = await (
-        await fetch(
-          `https://opentdb.com/api.php?amount=${config.numberOfQuestion}&category=${config.category.id}&difficulty=${config.level}&type=${config.type}`
-        )
-      ).json();
-      console.log(results)
-      let shuffledResults = results.map((e:questionT) => {
-        let value = [...e.incorrect_answers, e.correct_answer]
-          .map((value) => ({ value, sort: Math.random() }))
-          .sort((a, b) => a.sort - b.sort)
-          .map(({ value }) => value);
-        e.answers = [...value];
-        return e;
-      });
-      console.log(shuffledResults, "shuffeled");
-      setQuestions([...shuffledResults]);
-      setLoading(false);
+      const formData = new FormData();
+      formData.append("topic", config.category.name); // Assuming `config.category.name` is your topic
+      formData.append("number", config.numberOfQuestion.toString());
+  
+      try {
+        const response = await fetch("http://localhost:8000/getmcq/", {
+          method: "POST",
+          body: formData,
+        });
+        const data = await response.json();
+  
+        if (response.ok) {
+          let formattedResults = data.map((e : Question) => ({
+            ...e,
+            answers: [...e.options, e.answer]
+              .map((value) => ({ value, sort: Math.random() }))
+              .sort((a, b) => a.sort - b.sort)
+              .map(({ value }) => value),
+            correct_answer: e.answer, // Ensure the key names match your frontend expectations
+          }));
+          setQuestions(formattedResults);
+        } else {
+          throw new Error(data.message || "Failed to fetch questions");
+        }
+      } catch (error) {
+        console.error("Error fetching questions:", error);
+      } finally {
+        setLoading(false);
+      }
     }
+  
     getQuestions();
-  }, [config.category, config.level, config.numberOfQuestion, config.type]);
+  }, [config.category, config.numberOfQuestion]); // Adjust dependencies if necessary
+  
 
   const answerCheck = (ans: string) => {
     if (ans === questions[0].correct_answer) {
