@@ -1,7 +1,9 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
-
+-- RUN BACKEND SERVER ON GEN-AI-PROJECT
+-- THEN NPM INSTALL
+-- NPM RUN DEV
 First, run the development server:
 
 ```bash
