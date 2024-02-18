@@ -6,7 +6,7 @@ export default function DropdownOptions() {
   const addCategory = useQuizConfig((state: any) => state.addCategory);
 
   return (
-    <div className="relative">
+    <div className="relative mb-4">
       <input
         type="text"
         onChange={(e: React.FormEvent<HTMLInputElement>) => addCategory(e.currentTarget.value ?? '')} // Assuming '0' as a placeholder ID since your backend might only need the name
